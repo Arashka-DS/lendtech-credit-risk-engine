@@ -1,0 +1,7 @@
+Total Portfolio Exposure: Total_Exposure = SUM('risk_inferences'[loan_amount])
+
+Total Expected Loss (EL): Portfolio_Expected_Loss = SUM('risk_inferences'[expected_loss])
+
+Average Probability of Default: Average_PD = AVERAGE('risk_inferences'[probability_of_default])
+
+High-Risk Accounts Flagged: High_Risk_Count = CALCULATE(COUNTROWS('risk_inferences'), 'risk_inferences'[behavioral_segment] == "High-Risk Defaulters")
