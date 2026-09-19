@@ -1,53 +1,55 @@
 version: '3.8'
 
 services:
-  risk_api:
-    build: .
-    container_name: risk_api
-    ports:
-      - "8000:8000"
-    environment:
-      - DB_HOST=postgres_dw
-      - DB_USER=risk_admin
-      - DB_PASSWORD=risk_password
-      - DB_NAME=risk_database
-    depends_on:
-      postgres_dw:
-        condition: service_healthy
-
-  postgres_dw:
+  postgres_risk:
     image: postgres:15-alpine
-    container_name: postgres_dw
+    container_name: risk_db
     environment:
       POSTGRES_USER: risk_admin
       POSTGRES_PASSWORD: risk_password
-      POSTGRES_DB: risk_database
+      POSTGRES_DB: credit_risk_db
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U risk_admin -d risk_database"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - pg_risk_data:/var/lib/postgresql/data
 
   metabase:
     image: metabase/metabase:latest
-    container_name: metabase_bi
+    container_name: metabase_risk
     ports:
       - "3000:3000"
     environment:
       - MB_DB_TYPE=postgres
-      - MB_DB_DBNAME=risk_database
+      - MB_DB_DBNAME=credit_risk_db
       - MB_DB_PORT=5432
       - MB_DB_USER=risk_admin
       - MB_DB_PASS=risk_password
-      - MB_DB_HOST=postgres_dw
+      - MB_DB_HOST=postgres_risk
     depends_on:
-      postgres_dw:
-        condition: service_healthy
+      - postgres_risk
+
+  risk_api:
+    build: .
+    container_name: risk_fastapi
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=postgres_risk
+      - DB_USER=risk_admin
+      - DB_PASSWORD=risk_password
+      - DB_NAME=credit_risk_db
+    volumes:
+      # Mounts local code to container for live-reloading
+      - ./src:/app/src
+      # Mounts models directory to persist the calibrated XGBoost .pkl file
+      - ./models:/app/models
+    # Executes the training script first, then boots the API
+    command: >
+      bash -c "python src/train_risk_model.py && 
+               uvicorn src.api:app --host 0.0.0.0 --port 8000 --reload"
+    depends_on:
+      - postgres_risk
 
 volumes:
-  postgres_data:
+  pg_risk_data:
