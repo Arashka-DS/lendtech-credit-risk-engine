@@ -1,0 +1,28 @@
+{
+    "name": "FinTech Executive Dark",
+    "dataColors": ["#00E676", "#29B6F6", "#FF1744", "#FFC400", "#D500F9", "#FFFFFF"],
+    "background": "#0B0F19",
+    "foreground": "#E2E8F0",
+    "tableAccent": "#29B6F6",
+    "visualStyles": {
+        "*": {
+            "*": {
+                "background": [{ "show": true, "color": { "solid": { "color": "#1A202C" } }, "transparency": 0 }],
+                "border": [{ "show": true, "color": { "solid": { "color": "#2D3748" } }, "radius": 6 }],
+                "visualHeader": [{ "foreground": { "solid": { "color": "#E2E8F0" } } }]
+            }
+        },
+        "card": {
+            "*": {
+                "labels": [{ "color": { "solid": { "color": "#00E676" } }, "fontSize": 28, "fontFamily": "DIN" }],
+                "categoryAxis": [{ "show": true, "color": { "solid": { "color": "#A0AEC0" } } }]
+            }
+        },
+        "tableEx": {
+            "*": {
+                "grid": [{ "gridVertical": true, "gridVerticalColor": { "solid": { "color": "#2D3748" } }, "gridHorizontal": true, "gridHorizontalColor": { "solid": { "color": "#2D3748" } } }],
+                "columnHeaders": [{ "fontColor": { "solid": { "color": "#E2E8F0" } }, "backColor": { "solid": { "color": "#2D3748" } } }]
+            }
+        }
+    }
+}
