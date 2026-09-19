@@ -1,0 +1,22 @@
+{
+    "name": "FinTech Dark Premium",
+    "dataColors": ["#00FFA3", "#00B8FF", "#FF3366", "#FFCC00", "#9933FF", "#FFFFFF"],
+    "background": "#0D1117",
+    "foreground": "#C9D1D9",
+    "tableAccent": "#00B8FF",
+    "visualStyles": {
+        "*": {
+            "*": {
+                "background": [{ "show": true, "color": { "solid": { "color": "#161B22" } }, "transparency": 0 }],
+                "border": [{ "show": true, "color": { "solid": { "color": "#30363D" } }, "radius": 8 }],
+                "visualHeader": [{ "foreground": { "solid": { "color": "#C9D1D9" } } }]
+            }
+        },
+        "card": {
+            "*": {
+                "labels": [{ "color": { "solid": { "color": "#00FFA3" } }, "fontSize": 24, "fontFamily": "Segoe UI Semibold" }],
+                "categoryAxis": [{ "show": true, "color": { "solid": { "color": "#8B949E" } } }]
+            }
+        }
+    }
+}
