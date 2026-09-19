@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  risk_api:
+    build: .
+    container_name: risk_api
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=postgres_dw
+      - DB_USER=risk_admin
+      - DB_PASSWORD=risk_password
+      - DB_NAME=risk_database
+    depends_on:
+      postgres_dw:
+        condition: service_healthy
+
+  postgres_dw:
+    image: postgres:15-alpine
+    container_name: postgres_dw
+    environment:
+      POSTGRES_USER: risk_admin
+      POSTGRES_PASSWORD: risk_password
+      POSTGRES_DB: risk_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U risk_admin -d risk_database"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase_bi
+    ports:
+      - "3000:3000"
+    environment:
+      - MB_DB_TYPE=postgres
+      - MB_DB_DBNAME=risk_database
+      - MB_DB_PORT=5432
+      - MB_DB_USER=risk_admin
+      - MB_DB_PASS=risk_password
+      - MB_DB_HOST=postgres_dw
+    depends_on:
+      postgres_dw:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
