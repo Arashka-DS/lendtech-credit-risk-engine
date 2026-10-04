@@ -1,6 +1,5 @@
-version: '3.8'
-
 services:
+ # 1. The Business Data (LendTech Risk Engine)
   postgres_risk:
     image: postgres:15-alpine
     container_name: risk_db
@@ -14,6 +13,19 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - pg_risk_data:/var/lib/postgresql/data
 
+  # 2. Metabase Internal DB
+  metabase_db:
+    image: postgres:15
+    container_name: metabase_internal_db
+    environment:
+      POSTGRES_USER: mb_user
+      POSTGRES_PASSWORD: mb_password
+      POSTGRES_DB: metabase_app
+    # This database is purely internal.
+    volumes:
+      - metabase_pg_data:/var/lib/postgresql/data
+      
+  # 3. Metabase BI Tool
   metabase:
     image: metabase/metabase:latest
     container_name: metabase_risk
@@ -21,14 +33,16 @@ services:
       - "3000:3000"
     environment:
       - MB_DB_TYPE=postgres
-      - MB_DB_DBNAME=credit_risk_db
+      - MB_DB_DBNAME=metabase_app
       - MB_DB_PORT=5432
-      - MB_DB_USER=risk_admin
-      - MB_DB_PASS=risk_password
-      - MB_DB_HOST=postgres_risk
+      - MB_DB_USER=mb_user
+      - MB_DB_PASS=mb_password
+      - MB_DB_HOST=metabase_db
     depends_on:
+      - metabase_db
       - postgres_risk
-
+      
+ # 4. Our FastAPI
   risk_api:
     build: .
     container_name: risk_fastapi
@@ -53,3 +67,4 @@ services:
 
 volumes:
   pg_risk_data:
+  metabase_pg_data:
