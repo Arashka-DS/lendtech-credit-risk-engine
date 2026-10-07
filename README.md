@@ -12,7 +12,7 @@ An end-to-end FinTech credit risk platform combining statistical rigor with mode
 ## 📊 Key Financial Metrics Implemented
 * **Expected Loss (EL):** `EL = PD × LGD × EAD`
 * **Probability Calibration:** Isotonic regression guarantees predicted scores map directly to real-world default frequencies.
-* **Data Drift (PSI):** Population Stability Index calculation detects shifts in inference data distributions against the training baseline.
+* **Data Drift (PSI):** Population Stability Index calculation detects shifts in inference data distributions against the training baseline
 
 ## 🚀 Quick Start
 1. **Clone the repository.**
